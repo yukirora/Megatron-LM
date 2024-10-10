@@ -135,7 +135,7 @@ class DotProductAttention(MegatronModule):
         # simple strides to extract the queries.
         query = query.reshape(output_size[2], output_size[0] * output_size[1], -1)
         # [sk, b, np, hn] -> [sk, b * np, hn]
-        key = key.view(output_size[3], output_size[0] * output_size[1], -1)
+        key = key.contiguous().view(output_size[3], output_size[0] * output_size[1], -1)
 
         # preallocting input tensor: [b * np, sq, sk]
         matmul_input_buffer = parallel_state.get_global_memory_buffer().get_tensor(

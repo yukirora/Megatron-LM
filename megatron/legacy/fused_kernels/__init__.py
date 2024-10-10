@@ -71,34 +71,6 @@ def load(args):
     else:
         extra_include_paths=[]
 
-    if args.masked_softmax_fusion:
-        if torch.version.hip is not None:
-             extra_cuda_flags = ['-D__HIP_NO_HALF_OPERATORS__=1',
-                                '-D__HIP_NO_HALF_CONVERSIONS__=1']
-        else:
-             extra_cuda_flags = ['-U__CUDA_NO_HALF_OPERATORS__',
-                                '-U__CUDA_NO_HALF_CONVERSIONS__',
-                                '--expt-relaxed-constexpr',
-                                '--expt-extended-lambda']
-        
-        # Upper triangular softmax.
-        sources=[srcpath / 'scaled_upper_triang_masked_softmax.cpp',
-                 srcpath / 'scaled_upper_triang_masked_softmax_cuda.cu']
-        scaled_upper_triang_masked_softmax_cuda = _cpp_extention_load_helper(
-            "scaled_upper_triang_masked_softmax_cuda",
-            sources, extra_cuda_flags, extra_include_paths)
-
-        # Masked softmax.
-        sources=[srcpath / 'scaled_masked_softmax.cpp',
-                 srcpath / 'scaled_masked_softmax_cuda.cu']
-        scaled_masked_softmax_cuda = _cpp_extention_load_helper(
-            "scaled_masked_softmax_cuda", sources, extra_cuda_flags, extra_include_paths)
-
-        # Softmax
-        sources=[srcpath / 'scaled_softmax.cpp',
-                 srcpath / 'scaled_softmax_cuda.cu']
-        scaled_softmax_cuda = _cpp_extention_load_helper(
-            "scaled_softmax_cuda", sources, extra_cuda_flags, extra_include_paths)
 
 
 def _get_cuda_bare_metal_version(cuda_dir):
